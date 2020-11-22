@@ -1,0 +1,12 @@
+<table class="table table-bordered" style="width: 100%;">
+    <tr class="row-{{i}}" *ngFor="let row of rowsArray; let i = index" cdkDropListGroup>
+        <td class="{{i}}-{{j}}" *ngFor="let column of colsArray; let j = index" cdkDropList
+            cdkDropListData="{{i}}-{{j}}" [cdkDropListConnectedTo]="connectedDropListArray[(rowCount * i) + j]"
+            (cdkDropListDropped)="onDrop($event)" [cdkDropListEnterPredicate]="enterPredicate">
+            <span *ngIf="startNode.row === i && startNode.column === j" cdkDragBoundary=".table" cdkDragData="Start"
+                cdkDrag>S</span>
+            <span *ngIf="endNode.row === i && endNode.column === j" cdkDragBoundary=".table" cdkDragData="End"
+                cdkDrag>E</span>
+        </td>
+    </tr>
+</table>
