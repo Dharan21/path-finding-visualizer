@@ -16,7 +16,8 @@ h3 {
     align-items: center;
     padding: 0 30px;
     justify-content: space-between;
-}
+}   
+
 .btn {
     background-color: var(--header-text-color);
     color: var(--header-background);
