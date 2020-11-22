@@ -1,0 +1,39 @@
+label {
+    font-weight: 500;
+}
+
+h3 {
+    font-weight: 900;
+    margin: 0;
+}
+
+.header {
+    width: 100%;
+    background-color: var(--header-background);
+    color: var(--header-text-color);
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    justify-content: space-between;
+}
+.btn {
+    background-color: var(--header-text-color);
+    color: var(--header-background);
+    border-color: var(--header-text-color);
+    width: 90%;
+    margin: 0 5%;
+}
+
+@media (max-width: 763px) {
+
+}
+
+@media (max-width: 500px) {
+    .header {
+        padding: 0 5px;
+    }
+    h3 {
+        text-align: center;
+    }
+}

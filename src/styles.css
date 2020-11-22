@@ -1,4 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+    --header-background: #14274e;
+    --header-text-color: #f1f6f9;
+    --color-3: #394867;
+    --color-4: #9ba4b4;
+    /* --bar-color: #1f3c88;
+    --bar-sorted: #070d59;
+    --bar-traverse: #b83b5e;
+    --bar-selected: #ee6f57; */
+}
 body {
     margin: 0;
     padding: 0;
@@ -6,9 +17,9 @@ body {
 * {
     box-sizing: border-box;
 }
-
-.container {
-    padding: 10px 20px 0 20px;
-}
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+    margin: 0;
+    /* font-family: Roboto, "Helvetica Neue", sans-serif;  */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
