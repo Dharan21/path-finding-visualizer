@@ -1,7 +1,11 @@
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 
 import { Node } from './../../models/node.model';
+import * as fromVisualizeActions from './../../store/actions/visualize.actions';
+import * as VisualizeReducer from './../..//store/reducers/visualize.reducer';
+import * as fromApp from './../../store/app.reducers';
 
 @Component({
     selector: 'app-canvas',
@@ -16,15 +20,22 @@ export class CanvasComponent implements OnInit {
     rowsArray: number[];
     colsArray: number[];
     connectedDropListArray: string[][] = [];
+    arrayIndexes: number[][] = [];
     windowsWidth: number;
 
-    constructor() {
+    constructor(
+        private store: Store<fromApp.AppState>
+    ) {
         this.rowsArray = Array(this.rowCount);
         this.colsArray = Array(this.colCount);
     }
 
 
     ngOnInit(): void {
+        this.store.select('visualizeData').subscribe((data: VisualizeReducer.State) => {
+            this.startNode = data.startNode;
+            this.endNode = data.endNode;
+        });
         this.colCount = Math.floor((window.innerWidth - 10) / 30);
         this.colsArray = Array(this.colCount);
         this.initialize();
@@ -45,20 +56,34 @@ export class CanvasComponent implements OnInit {
     }
 
     initialize(): void {
-        this.startNode = {
+        const startNode = {
             row: this.random(this.rowCount),
             column: this.random(this.colCount)
         };
+        let endNode: Node;
         while (true) {
-            this.endNode = {
+            endNode = {
                 row: this.random(this.rowCount),
                 column: this.random(this.colCount)
             };
-            if (this.startNode.row !== this.endNode.row || this.startNode.column !== this.endNode.column) {
+            if (startNode.row !== endNode.row || startNode.column !== endNode.column) {
                 break;
             }
         }
+        this.store.dispatch(new fromVisualizeActions.InitializeStartEnd({ startNode, endNode }));
         this.initializeConnectedNodes();
+        this.initializeIndexArrays();
+    }
+
+    initializeIndexArrays(): void {
+        this.arrayIndexes = [];
+        const innerList = [];
+        for (let j = 0; j < this.colCount; j++) {
+            innerList.push(j);
+        }
+        for (let i = 0; i < this.rowCount; i++) {
+            this.arrayIndexes.push(innerList);
+        }
     }
 
     enterPredicate(drag: CdkDrag, drop: CdkDropList): boolean {

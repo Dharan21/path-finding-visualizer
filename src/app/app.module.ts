@@ -5,7 +5,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
 
+import { reducers } from './store/app.reducers';
 import { AppComponent } from './app.component';
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -22,7 +24,8 @@ import { HeaderComponent } from './components/header/header.component';
     BrowserAnimationsModule,
     DragDropModule,
     MatIconModule,
-    FormsModule
+    FormsModule,
+    StoreModule.forRoot(reducers)
   ],
   providers: [],
   bootstrap: [AppComponent]
