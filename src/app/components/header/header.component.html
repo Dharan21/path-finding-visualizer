@@ -13,7 +13,7 @@
                     </select>
                 </div>
                 <div class="col-sm-12 col-md-3">
-                    <button type="submit" [disabled]="!f.valid" class="btn btn-primary">Visualize!</button>
+                    <button type="submit" [disabled]="!f.valid || isRunning" class="btn btn-primary">Visualize!</button>
                 </div>
             </div>
         </form>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
@@ -11,10 +11,17 @@ import * as fromVisualizeActions from './../../store/actions/visualize.actions';
     templateUrl: 'header.component.html',
     styleUrls: ['header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
     algoDropdown = Constants.PathFindingAlgoDropdown;
+    isRunning = false;
 
     constructor(private store: Store<AppState.AppState>) {}
+
+    ngOnInit(): void {
+        this.store.select('visualizeData').subscribe((data) => {
+            this.isRunning = data.visualizeStarted;
+        });
+    }
 
     onSubmit(form: NgForm): void {
         console.log(form.value);

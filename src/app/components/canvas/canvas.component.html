@@ -3,14 +3,17 @@
         <tr class="row-{{i}}" *ngFor="let row of rowsArray; let i = index" cdkDropListGroup>
             <td class="box {{i}}-{{j}}" *ngFor="let column of colsArray; let j = index" cdkDropList
                 cdkDropListData="{{i}}-{{j}}" [cdkDropListConnectedTo]="connectedDropListArray[(rowCount * i) + j]"
-                (cdkDropListDropped)="onDrop($event)" [cdkDropListEnterPredicate]="enterPredicate">
+                (cdkDropListDropped)="onDrop($event)" [cdkDropListEnterPredicate]="enterPredicate" (keydown)="check(i, j)">
                 <span *ngIf="startNode.row === i && startNode.column === j" class="material-icons" cdkDragBoundary=".table"
-                    cdkDragData="Start" cdkDrag>
+                    cdkDragData="Start" cdkDrag [cdkDragDisabled]="isRunning">
                     play_circle_filled
                 </span>
                 <span *ngIf="endNode.row === i && endNode.column === j" class="material-icons" cdkDragBoundary=".table"
-                    cdkDragData="End" cdkDrag>
+                    cdkDragData="End" cdkDrag [cdkDragDisabled]="isRunning">
                     radio_button_checked
+                </span>
+                <span *ngIf="!((endNode.row === i && endNode.column === j) || (startNode.row === i && startNode.column === j))" cdkDragBoundary=".table"
+                    cdkDragData="block" cdkDrag [cdkDragDisabled]="isRunning" (cdkDragStarted)="addBlock($event)" (cdkDragEntered)="updateBlocks($event)" class="bk">
                 </span>
             </td>
         </tr>
