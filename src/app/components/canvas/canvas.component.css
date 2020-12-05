@@ -1,0 +1,45 @@
+.canvas {
+    padding: 0 5px;
+    display: flex;
+    justify-content: center;
+}
+td {
+    padding: 0;
+    width: 30px;
+    height: 31px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    border: 1px solid #7e7d7d;
+}
+td > span {
+    /* width: 10px; */
+    /* height: 10px; */
+    cursor: move;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+.visited {
+    background-color: var(--traversed-node-color);
+    transition: ease 0.3s;
+}
+.path {
+    background-color: var(--sortest-path-color);
+    transition: ease 0.5s;
+}
+.bk {
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 31px;
+    position: absolute!important;
+    cursor: default!important;
+}
+.block {
+    background-color: var(--block-color);
+    transition: ease 0.2s;
+}
