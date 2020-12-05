@@ -21,3 +21,11 @@ span {
     position: relative;
     z-index: 1;
 }
+.visited {
+    background-color: var(--color-3);
+    transition: ease 0.3s;
+}
+.path {
+    background-color: var(--sortest-path-color);
+    transition: ease 0.5s;
+}

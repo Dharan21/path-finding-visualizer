@@ -5,7 +5,7 @@ export const INITIALIZE_START_END = '[Visualize] Initialize Start - End Node';
 export const VISUALIZE_START = '[Visualize] Visualize Start';
 export const VISUALIZE_END = '[Visualize] Visualize End';
 
-export class InitializeStartEnd implements Action {
+export class InitializeStartEndAction implements Action {
     readonly type = INITIALIZE_START_END;
 
     constructor(public payload: { startNode: Node, endNode: Node }) { }
@@ -17,11 +17,11 @@ export class VisualizeStartAction implements Action {
     constructor(public payload: Node) { }
 }
 
-export class VisualizeEnd implements Action {
+export class VisualizeEndAction implements Action {
     readonly type = VISUALIZE_END;
 }
 
 export type VisualizeAction =
     | VisualizeStartAction
-    | InitializeStartEnd
-    | VisualizeEnd;
+    | InitializeStartEndAction
+    | VisualizeEndAction;

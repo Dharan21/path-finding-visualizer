@@ -6,6 +6,7 @@ import { Node } from './../../models/node.model';
 import * as fromVisualizeActions from './../../store/actions/visualize.actions';
 import * as VisualizeReducer from './../..//store/reducers/visualize.reducer';
 import * as fromApp from './../../store/app.reducers';
+import * as Enums from './../../utils/enums';
 
 @Component({
     selector: 'app-canvas',
@@ -22,6 +23,9 @@ export class CanvasComponent implements OnInit {
     connectedDropListArray: string[][] = [];
     arrayIndexes: number[][] = [];
     windowsWidth: number;
+    delay = 0;
+    speed = 20;
+    sortestPath: Node[] = [];
 
     constructor(
         private store: Store<fromApp.AppState>
@@ -33,14 +37,141 @@ export class CanvasComponent implements OnInit {
 
     ngOnInit(): void {
         this.store.select('visualizeData').subscribe((data: VisualizeReducer.State) => {
-            this.startNode = data.startNode;
-            this.endNode = data.endNode;
+            if (!this.startNode && !this.endNode) {
+                this.startNode = data.startNode;
+                this.endNode = data.endNode;
+            } else if (data.visualizeStarted) {
+                this.visualize(data.algorithm);
+            }
         });
         this.colCount = Math.floor((window.innerWidth - 10) / 30);
         this.colsArray = Array(this.colCount);
         this.initialize();
     }
 
+    visualize(algo: string): void {
+        switch (algo) {
+            case Enums.PathFindingAlgorithms.DFS:
+            case Enums.PathFindingAlgorithms.BFS:
+                this.BFS();
+        }
+    }
+
+    BFS(): void {
+        const boxes: HTMLCollectionOf<Element> = document.getElementsByClassName('box');
+        let queue: Node[] = [this.startNode];
+        let isFound = false;
+        let searchedPosotions: Node[] = [this.startNode];
+        this.sortestPath = [this.startNode];
+        while (queue.length > 0) {
+            // debugger
+            let firstFromQueue = queue.splice(0, 1)[0];
+            const nodes = [];
+            // tslint:disable-next-line: one-variable-per-declaration
+            let r1 = -1, r2 = -1, c1 = -1, c2 = -1;
+            if (firstFromQueue.row - 1 >= 0) {
+                const node = { row: firstFromQueue.row - 1, column: firstFromQueue.column };
+                r1 = node.row;
+                if (searchedPosotions.findIndex(x => x.row === node.row && x.column === node.column) === -1) {
+                    searchedPosotions.push(node);
+                    nodes.push(node);
+                    if (node.row === this.endNode.row && node.column === this.endNode.column) {
+                        isFound = true;
+                        break;
+                    } else {
+                        queue.push(node);
+                    }
+                }
+            }
+            if (firstFromQueue.row + 1 < this.rowCount) {
+                const node = { row: firstFromQueue.row + 1, column: firstFromQueue.column };
+                r2 = node.row;
+                if (searchedPosotions.findIndex(x => x.row === node.row && x.column === node.column) === -1) {
+                    searchedPosotions.push(node);
+                    nodes.push(node);
+                    if (node.row === this.endNode.row && node.column === this.endNode.column) {
+                        isFound = true;
+                        break;
+                    } else {
+                        queue.push(node);
+                    }
+                }
+            }
+            if (firstFromQueue.column - 1 >= 0) {
+                const node = { row: firstFromQueue.row, column: firstFromQueue.column - 1 };
+                c1 = node.column;
+                if (searchedPosotions.findIndex(x => x.row === node.row && x.column === node.column) === -1) {
+                    searchedPosotions.push(node);
+                    nodes.push(node);
+                    if (node.row === this.endNode.row && node.column === this.endNode.column) {
+                        isFound = true;
+                        break;
+                    } else {
+                        queue.push(node);
+                    }
+                }
+            }
+            if (firstFromQueue.column + 1 < this.colCount) {
+                const node = { row: firstFromQueue.row, column: firstFromQueue.column + 1 };
+                c2 = node.column;
+                if (searchedPosotions.findIndex(x => x.row === node.row && x.column === node.column) === -1) {
+                    searchedPosotions.push(node);
+                    nodes.push(node);
+                    if (node.row === this.endNode.row && node.column === this.endNode.column) {
+                        isFound = true;
+                        break;
+                    } else {
+                        queue.push(node);
+                    }
+                }
+            }
+            if (this.sortestPath.findIndex(x => x.row === firstFromQueue.row && x.column === firstFromQueue.column) > -1) {
+                const rm1 = r1 !== -1 ? this.modSub(this.endNode.row, r1) : Number.POSITIVE_INFINITY;
+                const rm2 = r2 !== -1 ? this.modSub(this.endNode.row, r2) : Number.POSITIVE_INFINITY;
+                const r = this.endNode.row === firstFromQueue.row ? this.endNode.row : rm1 > rm2 ? r2 : r1;
+
+                if (this.sortestPath.findIndex(x => x.row === r && x.column === firstFromQueue.column) > -1) {
+                    const cm1 = c1 !== -1 ? this.modSub(this.endNode.column, c1) : Number.POSITIVE_INFINITY;
+                    const cm2 = c2 !== -1 ? this.modSub(this.endNode.column, c2) : Number.POSITIVE_INFINITY;
+                    const c = this.endNode.column === firstFromQueue.column ? this.endNode.column : cm1 > cm2 ? c2 : c1;
+                    this.sortestPath.push({ row: firstFromQueue.row, column: c });
+                } else {
+                    this.sortestPath.push({ row: r, column: firstFromQueue.column });
+                }
+
+            }
+            this.markNodeAsSearched(nodes);
+        }
+        if (isFound) {
+            this.sortestPath.push(this.endNode);
+            console.log(this.sortestPath);
+            this.markNodeAsSearched([this.endNode]);
+            this.visualizeSortedPath();
+        }
+    }
+
+    modSub(v1: number, v2: number): number {
+        return v1 > v2 ? v1 - v2 : v2 - v1;
+    }
+
+    markNodeAsSearched(nodes: Node[]): void {
+        setTimeout(() => {
+            nodes.forEach(node => {
+                const element = document.getElementsByClassName(`${node.row}-${node.column}`)[0];
+                // (element as HTMLElement).style.backgroundColor = 'blue';
+                (element as HTMLElement).classList.add('visited');
+            });
+        }, this.delay += this.speed);
+    }
+
+    visualizeSortedPath(): void {
+        this.sortestPath.forEach(x => {
+            setTimeout(() => {
+                const element = document.getElementsByClassName(`${x.row}-${x.column}`)[0];
+                (element as HTMLElement).classList.add('path');
+            }, this.delay += this.speed);
+        });
+    }
 
     initializeConnectedNodes(): void {
         let counter = this.rowCount * this.colCount;
@@ -70,7 +201,7 @@ export class CanvasComponent implements OnInit {
                 break;
             }
         }
-        this.store.dispatch(new fromVisualizeActions.InitializeStartEnd({ startNode, endNode }));
+        this.store.dispatch(new fromVisualizeActions.InitializeStartEndAction({ startNode, endNode }));
         this.initializeConnectedNodes();
         this.initializeIndexArrays();
     }

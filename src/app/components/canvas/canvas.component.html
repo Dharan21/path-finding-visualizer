@@ -1,7 +1,7 @@
 <div class="canvas">
     <table>
         <tr class="row-{{i}}" *ngFor="let row of rowsArray; let i = index" cdkDropListGroup>
-            <td class="{{i}}-{{j}}" *ngFor="let column of colsArray; let j = index" cdkDropList
+            <td class="box {{i}}-{{j}}" *ngFor="let column of colsArray; let j = index" cdkDropList
                 cdkDropListData="{{i}}-{{j}}" [cdkDropListConnectedTo]="connectedDropListArray[(rowCount * i) + j]"
                 (cdkDropListDropped)="onDrop($event)" [cdkDropListEnterPredicate]="enterPredicate">
                 <span *ngIf="startNode.row === i && startNode.column === j" class="material-icons" cdkDragBoundary=".table"
