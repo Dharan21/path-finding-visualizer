@@ -22,8 +22,8 @@ h3 {
     background-color: var(--header-text-color);
     color: var(--header-background);
     border-color: var(--header-text-color);
-    width: 90%;
-    margin: 0 5%;
+    width: 100%;
+    /* margin: 0 5%; */
 }
 
 @media (max-width: 763px) {
