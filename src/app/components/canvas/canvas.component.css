@@ -23,14 +23,6 @@ td > span {
     position: relative;
     z-index: 1;
 }
-.visited {
-    background-color: var(--traversed-node-color);
-    transition: ease 0.3s;
-}
-.path {
-    background-color: var(--sortest-path-color);
-    transition: ease 0.5s;
-}
 .bk {
     top: 0;
     left: 0;
@@ -38,8 +30,4 @@ td > span {
     height: 31px;
     position: absolute!important;
     cursor: default!important;
-}
-.block {
-    background-color: var(--block-color);
-    transition: ease 0.2s;
 }

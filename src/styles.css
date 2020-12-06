@@ -23,3 +23,16 @@ body {
     /* font-family: Roboto, "Helvetica Neue", sans-serif;  */
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
+.visited {
+    background-color: var(--traversed-node-color);
+    transition: ease 0.3s;
+}
+.path {
+    background-color: var(--sortest-path-color);
+    transition: ease 0.5s;
+}
+.block {
+    background-color: var(--block-color);
+    transition: ease 0.2s;
+}
