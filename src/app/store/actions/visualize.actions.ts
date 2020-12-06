@@ -14,7 +14,7 @@ export class InitializeStartEndAction implements Action {
 export class VisualizeStartAction implements Action {
     readonly type = VISUALIZE_START;
 
-    constructor(public payload: Node) { }
+    constructor(public payload: { algo: string, speed: number }) { }
 }
 
 export class VisualizeEndAction implements Action {

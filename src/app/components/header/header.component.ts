@@ -13,6 +13,7 @@ import * as fromVisualizeActions from './../../store/actions/visualize.actions';
 })
 export class HeaderComponent implements OnInit {
     algoDropdown = Constants.PathFindingAlgoDropdown;
+    speedDropdown = Constants.SpeedDropdown;
     isRunning = false;
 
     constructor(private store: Store<AppState.AppState>) {}
@@ -25,6 +26,6 @@ export class HeaderComponent implements OnInit {
 
     onSubmit(form: NgForm): void {
         console.log(form.value);
-        this.store.dispatch(new fromVisualizeActions.VisualizeStartAction(form.value.algo));
+        this.store.dispatch(new fromVisualizeActions.VisualizeStartAction(form.value));
     }
 }

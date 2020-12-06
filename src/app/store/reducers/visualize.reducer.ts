@@ -5,6 +5,7 @@ export interface State {
     startNode: Node;
     endNode: Node;
     algorithm: string;
+    speed: number;
     visualizeStarted: boolean;
 }
 
@@ -12,6 +13,7 @@ const initialState: State = {
     startNode: null,
     endNode: null,
     algorithm: null,
+    speed: null,
     visualizeStarted: false
 }
 
@@ -26,13 +28,15 @@ export function reducer(state = initialState, action: VisualizeActions.Visualize
         case VisualizeActions.VISUALIZE_START:
             return {
                 ...state,
-                algorithm: action.payload,
+                algorithm: action.payload.algo,
+                speed: action.payload.speed,
                 visualizeStarted: true
             };
         case VisualizeActions.VISUALIZE_END:
             return {
                 ...state,
                 algorithm: null,
+                speed: null,
                 visualizeStarted: false
             };
         default:
