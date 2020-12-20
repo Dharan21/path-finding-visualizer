@@ -12,7 +12,7 @@
                     cdkDragData="End" cdkDrag [cdkDragDisabled]="isRunning">
                     radio_button_checked
                 </span>
-                <span *ngIf="!((endNode.row === i && endNode.column === j) || (startNode.row === i && startNode.column === j))" cdkDragBoundary=".table"
+                <span *ngIf="!((endNode.row === i && endNode.column === j) || (startNode.row === i && startNode.column === j))" cdkDragBoundary=".table" (click)="manageWallNode(i, j)"
                     cdkDragData="block" cdkDrag [cdkDragDisabled]="isRunning" (cdkDragStarted)="addBlock($event)" (cdkDragEntered)="updateBlocks($event)" class="bk">
                 </span>
             </td>

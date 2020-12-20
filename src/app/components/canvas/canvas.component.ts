@@ -64,16 +64,28 @@ export class CanvasComponent implements OnInit {
             case Enums.PathFindingAlgorithms.BFS:
                 this.BFS(withTimeout);
                 break;
+            case Enums.PathFindingAlgorithms.Dijkstra:
+                this.dijkstra(withTimeout);
+                break;
         }
     }
 
-    BFS(withTimeout: boolean = true): void {
+    cleanEnv(): void {
         this.delay = 0;
         const boxes: HTMLCollectionOf<Element> = document.getElementsByClassName('box');
         for (let i = 0; i < boxes.length; i++) {
             boxes.item(i).classList.remove(Enums.ClassNames.Path);
             boxes.item(i).classList.remove(Enums.ClassNames.Visited);
+            boxes.item(i).classList.remove(Enums.ClassNames.Backtrack);
         }
+    }
+
+    dijkstra(withTimeout: boolean = true): void {
+        this.cleanEnv();
+    }
+
+    BFS(withTimeout: boolean = true): void {
+        this.cleanEnv();
         let queue: Node[] = [this.startNode];
         let isFound = false;
         let searchedPosotions: Node[] = [this.startNode];
@@ -163,11 +175,14 @@ export class CanvasComponent implements OnInit {
             //     }
 
             // }
-            this.markNodeAsSearched(nodes, withTimeout);
+            
+            // if (nodes.length > 0) {
+                // this.markNodeAsSearched(nodes, withTimeout);
+            // }
         }
         if (isFound) {
             this.sortestPath.push(this.endNode);
-            console.log(this.sortestPath);
+            // console.log(this.sortestPath);
             this.markNodeAsSearched([this.endNode], withTimeout);
             // this.visualizeSortedPath(withTimeout);
         }
@@ -180,12 +195,7 @@ export class CanvasComponent implements OnInit {
     }
 
     DFS(withTimeout: boolean = true): void {
-        this.delay = 0;
-        const boxes: HTMLCollectionOf<Element> = document.getElementsByClassName('box');
-        for (let i = 0; i < boxes.length; i++) {
-            boxes.item(i).classList.remove(Enums.ClassNames.Path);
-            boxes.item(i).classList.remove(Enums.ClassNames.Visited);
-        }
+        this.cleanEnv();
         let stack: Node[] = [this.startNode];
         let isFound = false;
         let searchedPosotions: Node[] = [this.startNode];
@@ -195,7 +205,7 @@ export class CanvasComponent implements OnInit {
             if (firstFromStack.row === this.endNode.row && firstFromStack.column === this.endNode.column) {
                 isFound = true;
                 break;
-            } 
+            }
             this.markNodeAsSearched([firstFromStack], withTimeout);
             // tslint:disable-next-line: one-variable-per-declaration
             if (firstFromStack.row - 1 >= 0) {
@@ -263,13 +273,23 @@ export class CanvasComponent implements OnInit {
             setTimeout(() => {
                 nodes.forEach(node => {
                     const element = document.getElementsByClassName(`${node.row}-${node.column}`)[0];
-                    (element as HTMLElement).classList.add(Enums.ClassNames.Visited);
+                    if (element.classList.contains(Enums.ClassNames.Visited)) {
+                        element.classList.remove(Enums.ClassNames.Visited);
+                        element.classList.add(Enums.ClassNames.Backtrack);
+                    } else {
+                        element.classList.add(Enums.ClassNames.Visited);
+                    }
                 });
             }, this.delay += this.speed);
         } else {
             nodes.forEach(node => {
                 const element = document.getElementsByClassName(`${node.row}-${node.column}`)[0];
-                (element as HTMLElement).classList.add(Enums.ClassNames.Visited);
+                if (element.classList.contains(Enums.ClassNames.Visited)) {
+                    element.classList.remove(Enums.ClassNames.Visited);
+                    element.classList.add(Enums.ClassNames.Backtrack);
+                } else {
+                    element.classList.add(Enums.ClassNames.Visited);
+                }
             });
         }
     }
@@ -381,6 +401,22 @@ export class CanvasComponent implements OnInit {
         };
         const index = this.blocks.findIndex(x => x.row === node.row && x.column === node.column);
         const element = document.getElementsByClassName(`${node.row}-${node.column}`)[0];
+        if (index > -1) {
+            this.blocks.splice(index, 1);
+            (element as HTMLElement).classList.remove(Enums.ClassNames.Block);
+        } else {
+            (element as HTMLElement).classList.add(Enums.ClassNames.Block);
+            this.blocks.push(node);
+        }
+    }
+
+    manageWallNode(row: number, column: number): void {
+        const node: Node = {
+            row,
+            column
+        };
+        const index = this.blocks.findIndex(x => x.row === row && x.column === column);
+        const element = document.getElementsByClassName(`${row}-${column}`)[0];
         if (index > -1) {
             this.blocks.splice(index, 1);
             (element as HTMLElement).classList.remove(Enums.ClassNames.Block);

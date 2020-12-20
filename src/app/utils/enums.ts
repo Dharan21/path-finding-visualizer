@@ -1,10 +1,12 @@
 export enum PathFindingAlgorithms {
-    BFS = 'Breath First Search',
-    DFS = 'Depth First Search'
+    BFS = 'Breath First Traversal',
+    DFS = 'Depth First Traversal',
+    Dijkstra = 'Dijkstra'
 }
 
 export enum ClassNames {
     Visited = 'visited',
     Path = 'path',
-    Block = 'block'
+    Block = 'block',
+    Backtrack = 'backtrack'
 }
