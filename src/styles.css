@@ -7,8 +7,8 @@
     --traversed-node-color: #9ba4b4;
     --color-4: #1f3c88;
     --sortest-path-color: #b83b5e;
-    /* --bar-sorted: #070d59;
-    --bar-selected: #ee6f57;  */
+    --backtrack: #ee6f57; 
+    --bar-sorted: #070d59;
 }
 body {
     margin: 0;
@@ -35,4 +35,8 @@ body {
 .block {
     background-color: var(--block-color);
     transition: ease 0.2s;
+}
+.backtrack {
+    background-color: var(--backtrack);
+    transition: ease 0.3s;
 }
