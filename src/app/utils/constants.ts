@@ -2,8 +2,8 @@ import * as Enums from './enums';
 
 export const PathFindingAlgoDropdown: string[] = [
     Enums.PathFindingAlgorithms.BFS,
-    Enums.PathFindingAlgorithms.DFS
-    // Enums.PathFindingAlgorithms.Dijkstra
+    Enums.PathFindingAlgorithms.DFS,
+    Enums.PathFindingAlgorithms.Dijkstra
 ];
 
 export const SpeedDropdown: { option: string, value: number }[] = [
