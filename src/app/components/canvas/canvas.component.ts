@@ -97,6 +97,9 @@ export class CanvasComponent implements OnInit {
       case Enums.PathFindingAlgorithms.Dijkstra:
         this.dijkstra(withTimeout);
         break;
+      case Enums.PathFindingAlgorithms.AStar:
+        this.aStar(withTimeout);
+        break;
     }
   }
 
@@ -110,6 +113,48 @@ export class CanvasComponent implements OnInit {
       boxes.item(i).classList.remove(Enums.ClassNames.Visited);
       boxes.item(i).classList.remove(Enums.ClassNames.Backtrack);
     }
+  }
+
+  aStar(withTimeout: boolean = true): void {
+    this.cleanEnv();
+
+    // A*
+    const open: {
+      row: number;
+      column: number;
+      f: number;
+      g?: number;
+      h?: number;
+    }[] = [];
+    const closed: {
+      row: number;
+      column: number;
+      f: number;
+      g?: number;
+      h?: number;
+    }[] = [];
+    open.push({ ...this.startNode, f: 0 });
+
+    while (open.length !== 0) {
+      const q = open.sort((x, y) => x.f - y.f)[0];
+
+      const qIndex = open.findIndex(
+        (x) => x.row === q.row && x.column === q.column
+      );
+      open.splice(qIndex, 1);
+
+      // row - 1, col
+      const blockPosIndex = this.blocks.findIndex(
+        (x) => x.row === q.row - 1 && x.column === q.column
+      );
+    }
+
+    setTimeout(() => {
+      if (withTimeout) {
+        this.store.dispatch(new fromVisualizeActions.VisualizeEndAction());
+      }
+      this.isCompletedOnce = true;
+    }, (this.delay += this.speed));
   }
 
   dijkstra(withTimeout: boolean = true): void {
@@ -149,6 +194,9 @@ export class CanvasComponent implements OnInit {
             minJ = j;
           }
         }
+      }
+      if (minI === -1 || minJ === -1) {
+        break;
       }
       const minDistanceNode = { row: minI, column: minJ };
       sptSet.push(minDistanceNode);
@@ -416,7 +464,7 @@ export class CanvasComponent implements OnInit {
     }
     if (isFound) {
       this.sortestPath.push(this.endNode);
-    //   console.log(this.sortestPath);
+      //   console.log(this.sortestPath);
       this.markNodeAsSearched([this.endNode], withTimeout);
       // this.visualizeSortedPath(withTimeout);
     }
