@@ -70,6 +70,7 @@ export class CanvasComponent implements OnInit {
       const list = [];
       for (let j = 0; j < this.colCount; j++) {
         list.push([this.random(10, 1), this.random(10, 1)]);
+        // list.push([1, 1]);
       }
       this.weights.push(list);
     }
@@ -80,6 +81,7 @@ export class CanvasComponent implements OnInit {
   isWeighted(): boolean {
     switch (this.currentAlgo) {
       case Enums.PathFindingAlgorithms.Dijkstra:
+      case Enums.PathFindingAlgorithms.AStar:
         return true;
       default:
         return false;
@@ -122,39 +124,119 @@ export class CanvasComponent implements OnInit {
     const open: {
       row: number;
       column: number;
-      f: number;
+      f?: number;
       g?: number;
       h?: number;
     }[] = [];
     const closed: {
       row: number;
       column: number;
-      f: number;
+      f?: number;
       g?: number;
       h?: number;
     }[] = [];
-    open.push({ ...this.startNode, f: 0 });
-
+    open.push({ ...this.startNode, f: 0, g: 0 });
     while (open.length !== 0) {
       const q = open.sort((x, y) => x.f - y.f)[0];
 
       const qIndex = open.findIndex(
         (x) => x.row === q.row && x.column === q.column
       );
+
+      this.markNodeAsSearched([{ row: q.row, column: q.column }], withTimeout);
+
       open.splice(qIndex, 1);
 
       // row - 1, col
-      const blockPosIndex = this.blocks.findIndex(
-        (x) => x.row === q.row - 1 && x.column === q.column
-      );
+      const successors: {
+        row: number;
+        column: number;
+        f?: number;
+        g?: number;
+        h?: number;
+      }[] = [
+        { row: q.row - 1, column: q.column },
+        { row: q.row + 1, column: q.column },
+        { row: q.row, column: q.column - 1 },
+        { row: q.row, column: q.column + 1 },
+      ];
+      let isFound = false;
+      for (let i = 0; i < successors.length; i++) {
+        const successor = successors[i];
+        if (
+          successor.row < 0 ||
+          successor.row >= this.rowCount ||
+          successor.column >= this.colCount ||
+          successor.column < 0
+        )
+          continue;
+        const blockPosIndex = this.blocks.findIndex(
+          (x) => x.row === successor.row && x.column === successor.column
+        );
+        if (blockPosIndex === -1) {
+          if (
+            successor.row === this.endNode.row &&
+            successor.column === this.endNode.column
+          ) {
+            this.markNodeAsSearched(
+              [{ row: successor.row, column: successor.column }],
+              withTimeout
+            );
+            isFound = true;
+            break;
+          }
+          let distance = 0;
+          if (i === 0) distance = this.weights[q.row - 1][q.column][0];
+          else if (i === 1) distance = this.weights[q.row][q.column][0];
+          else if (i === 2) distance = this.weights[q.row][q.column - 1][1];
+          else if (i === 3) distance = this.weights[q.row][q.column][1];
+          successor.g = q.g + distance;
+          successor.h = this.heuristic({ ...successor });
+          successor.f = successor.g + successor.h;
+          if (
+            open.find(
+              (x) => x.row === successor.row && x.column === successor.column
+            )
+          )
+            continue;
+          if (
+            closed.find(
+              (x) => x.row === successor.row && x.column === successor.column
+            )
+          )
+            continue;
+          //   this.markNodeAsSearched([
+          //     { row: successor.row, column: successor.column },
+          //   ]);
+          open.push({ ...successor });
+        }
+      }
+      if (isFound) break;
+      closed.push(q);
     }
-
+    // console.log(open);
+    // console.log(closed);
     setTimeout(() => {
       if (withTimeout) {
         this.store.dispatch(new fromVisualizeActions.VisualizeEndAction());
       }
       this.isCompletedOnce = true;
     }, (this.delay += this.speed));
+  }
+
+  private heuristic(current: { row: number; column: number }): number {
+    // return (
+    //   Math.abs(current.row - this.endNode.row) +
+    //   Math.abs(current.column - this.endNode.column)
+    // );
+    // return Math.max(
+    //   Math.abs(current.row - this.endNode.row),
+    //   Math.abs(current.column - this.endNode.column)
+    // );
+    return Math.sqrt(
+      Math.pow(current.row - this.endNode.row, 2) +
+        Math.pow(current.column - this.endNode.column, 2)
+    );
   }
 
   dijkstra(withTimeout: boolean = true): void {
