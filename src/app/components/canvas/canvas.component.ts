@@ -73,7 +73,7 @@ export class CanvasComponent implements OnInit {
       }
       this.weights.push(list);
     }
-    console.log(this.weights);
+    // console.log(this.weights);
     this.initialize();
   }
 
@@ -186,7 +186,7 @@ export class CanvasComponent implements OnInit {
           distanceMatrix[minI][minJ] + this.weights[minI][minJ][1];
       }
     }
-    console.log(sptSet);
+    // console.log(sptSet);
     setTimeout(() => {
       if (withTimeout) {
         this.store.dispatch(new fromVisualizeActions.VisualizeEndAction());
@@ -416,7 +416,7 @@ export class CanvasComponent implements OnInit {
     }
     if (isFound) {
       this.sortestPath.push(this.endNode);
-      console.log(this.sortestPath);
+    //   console.log(this.sortestPath);
       this.markNodeAsSearched([this.endNode], withTimeout);
       // this.visualizeSortedPath(withTimeout);
     }
