@@ -1,21 +1,130 @@
 <div class="canvas">
-    <table>
-        <tr class="row-{{i}}" *ngFor="let row of rowsArray; let i = index" cdkDropListGroup>
-            <td class="box {{i}}-{{j}}" *ngFor="let column of colsArray; let j = index" cdkDropList
-                cdkDropListData="{{i}}-{{j}}" [cdkDropListConnectedTo]="connectedDropListArray[(rowCount * i) + j]"
-                (cdkDropListDropped)="onDrop($event)" [cdkDropListEnterPredicate]="enterPredicate" (keydown)="check(i, j)">
-                <span *ngIf="startNode.row === i && startNode.column === j" class="material-icons" cdkDragBoundary=".table"
-                    cdkDragData="Start" cdkDrag [cdkDragDisabled]="isRunning">
-                    play_circle_filled
-                </span>
-                <span *ngIf="endNode.row === i && endNode.column === j" class="material-icons" cdkDragBoundary=".table"
-                    cdkDragData="End" cdkDrag [cdkDragDisabled]="isRunning">
-                    radio_button_checked
-                </span>
-                <span *ngIf="!((endNode.row === i && endNode.column === j) || (startNode.row === i && startNode.column === j))" cdkDragBoundary=".table" (click)="manageWallNode(i, j)"
-                    cdkDragData="block" cdkDrag [cdkDragDisabled]="isRunning" (cdkDragStarted)="addBlock($event)" (cdkDragEntered)="updateBlocks($event)" class="bk">
-                </span>
-            </td>
-        </tr>
-    </table>
+  <!-- <table *ngIf="false">
+    <tr
+      class="row-{{ i }}"
+      *ngFor="let row of rowsArray; let i = index"
+      cdkDropListGroup
+    >
+      <td
+        class="box {{ i }}-{{ j }}"
+        *ngFor="let column of colsArray; let j = index"
+        cdkDropList
+        cdkDropListData="{{ i }}-{{ j }}"
+        [cdkDropListConnectedTo]="connectedDropListArray[rowCount * i + j]"
+        (cdkDropListDropped)="onDrop($event)"
+        [cdkDropListEnterPredicate]="enterPredicate"
+        (keydown)="check(i, j)"
+      >
+        <span
+          *ngIf="startNode.row === i && startNode.column === j"
+          class="material-icons"
+          cdkDragBoundary=".table"
+          cdkDragData="Start"
+          cdkDrag
+          [cdkDragDisabled]="isRunning"
+        >
+          play_circle_filled
+        </span>
+        <span
+          *ngIf="endNode.row === i && endNode.column === j"
+          class="material-icons"
+          cdkDragBoundary=".table"
+          cdkDragData="End"
+          cdkDrag
+          [cdkDragDisabled]="isRunning"
+        >
+          radio_button_checked
+        </span>
+        <span
+          *ngIf="
+            !(
+              (endNode.row === i && endNode.column === j) ||
+              (startNode.row === i && startNode.column === j)
+            )
+          "
+          cdkDragBoundary=".table"
+          (click)="manageWallNode(i, j)"
+          cdkDragData="block"
+          cdkDrag
+          [cdkDragDisabled]="isRunning"
+          (cdkDragStarted)="addBlock($event)"
+          (cdkDragEntered)="updateBlocks($event)"
+          class="bk"
+        >
+        </span>
+      </td>
+    </tr>
+  </table> -->
+  <div *ngIf="true">
+    <div
+      class="row row-{{ i }}"
+      [ngClass]="{ firstRow: i === 0 }"
+      *ngFor="let row of rowsArray; let i = index"
+      cdkDropListGroup
+    >
+      <div
+        class="box"
+        [ngClass]="{ lastColumn: j === colsArray.length - 1 }"
+        *ngFor="let column of colsArray; let j = index"
+        data-before-content=""
+        data-after-content=""
+      >
+        <ng-container *ngIf="isAlgorithmForWeightedGraph">
+          <span *ngIf="i !== 0" class="top-weight"
+            ><strong>{{ weights[i][j][0] }}</strong></span
+          >
+          <span *ngIf="j !== colsArray.length - 1" class="right-weight"
+            ><strong>{{ weights[i][j][1] }}</strong></span
+          >
+        </ng-container>
+        <div
+          cdkDropList
+          class="innerBox {{ i }}-{{ j }}"
+          cdkDropListData="{{ i }}-{{ j }}"
+          [cdkDropListConnectedTo]="connectedDropListArray[rowCount * i + j]"
+          (cdkDropListDropped)="onDrop($event)"
+          [cdkDropListEnterPredicate]="enterPredicate"
+          (keydown)="check(i, j)"
+        >
+          <span
+            *ngIf="startNode.row === i && startNode.column === j"
+            class="material-icons"
+            cdkDragBoundary=".table"
+            cdkDragData="Start"
+            cdkDrag
+            [cdkDragDisabled]="isRunning"
+          >
+            play_circle_filled
+          </span>
+          <span
+            *ngIf="endNode.row === i && endNode.column === j"
+            class="material-icons"
+            cdkDragBoundary=".table"
+            cdkDragData="End"
+            cdkDrag
+            [cdkDragDisabled]="isRunning"
+          >
+            radio_button_checked
+          </span>
+          <span
+            *ngIf="
+              !(
+                (endNode.row === i && endNode.column === j) ||
+                (startNode.row === i && startNode.column === j)
+              )
+            "
+            cdkDragBoundary=".table"
+            (click)="manageWallNode(i, j)"
+            cdkDragData="block"
+            cdkDrag
+            [cdkDragDisabled]="isRunning"
+            (cdkDragStarted)="addBlock($event)"
+            (cdkDragEntered)="updateBlocks($event)"
+            class="bk"
+          >
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

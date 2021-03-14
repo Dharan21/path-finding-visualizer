@@ -39,6 +39,11 @@ export function reducer(state = initialState, action: VisualizeActions.Visualize
                 speed: null,
                 visualizeStarted: false
             };
+        case VisualizeActions.ALGORITM_CHANGED:
+            return {
+                ...state,
+                algorithm: action.payload
+            }
         default:
             return state;
     }
